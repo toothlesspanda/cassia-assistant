@@ -1,0 +1,25 @@
+version: '3'
+services:
+  pyhass:
+    build: .
+    depends_on:
+      - homeassistant
+      - mqtt
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/raspberrypi4-homeassistant:stable
+    volumes:
+      - /home/pi/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    network_mode: host
+  mqtt:
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - /home/pi/homeassistant/mosquitto/config:/mosquitto/config:ro
+      - /home/pi/homeassistant/mosquitto/log:/mosquitto/log
+      - /home/pi/homeassistant/mosquitto/data/:/mosquitto/data
